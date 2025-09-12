@@ -1,5 +1,4 @@
-﻿using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using ZstdNet;
 using LzhamWrapper;
 
@@ -27,7 +26,7 @@ public class DeComp
                     return returner;
                 }
             case "deflate":
-                using (InflaterInputStream decompressor = new(new MemoryStream(bytesToDecompress), new(false)))
+                using (ZLibStream decompressor = new(new MemoryStream(bytesToDecompress), CompressionMode.Decompress))
                 {
                     MemoryStream ms = new((int)outputsize);
                     decompressor.CopyTo(ms);

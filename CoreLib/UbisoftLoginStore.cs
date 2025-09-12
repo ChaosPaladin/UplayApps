@@ -29,7 +29,7 @@ public class UbisoftLoginStore
     }
     string FileName;
     public static UbisoftLoginStore Instance { get; set; } = new();
-    public static bool UseIsolatedStorage = true;
+    public static bool UseIsolatedStorage { get; set; } = true;
     static readonly IsolatedStorageFile IsolatedStorage = IsolatedStorageFile.GetUserStoreForAssembly();
     static bool Loaded
     {
@@ -45,16 +45,12 @@ public class UbisoftLoginStore
         }
 
         FileStream? fs = null;
-        if (IsolatedStorage.FileExists(filename) && UseIsolatedStorage )
+        if (IsolatedStorage.FileExists(filename) && UseIsolatedStorage)
             fs = IsolatedStorage.OpenFile(filename, FileMode.Open, FileAccess.Read);
         else if (File.Exists(filename))
-        {
             fs = File.Open(filename, FileMode.Open, FileAccess.Read);
-        }
         else
-        {
             Instance = new();
-        }
         if (fs != null)
         {
             try
@@ -65,7 +61,7 @@ public class UbisoftLoginStore
                 ds.CopyTo(ms);
                 ds.Dispose();
                 Instance = new();
-                var array = ms.ToArray();
+                var array = ms.ToArray().AsSpan();
                 var userdatalen = BitConverter.ToInt32(array[..4]);
                 Instance.UserDatCache = Cache.Parser.ParseFrom(array[4..(4 + userdatalen)]);
                 var remdatalen = BitConverter.ToInt32(array[(4 + userdatalen)..(8 + userdatalen)]);
@@ -91,9 +87,7 @@ public class UbisoftLoginStore
             if (UseIsolatedStorage)
                 fs = IsolatedStorage.OpenFile(Instance.FileName, FileMode.Create, FileAccess.Write);
             else
-            {
                 fs = File.Open(Instance.FileName, FileMode.Create, FileAccess.Write);
-            }
 
             if (fs != null)
             {

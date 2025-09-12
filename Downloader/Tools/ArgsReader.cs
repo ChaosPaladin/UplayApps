@@ -13,6 +13,7 @@ public class ArgsReader
         }
         Config.UseLocal = ParameterLib.HasParameter(args, "-local");
         UbiServices.Urls.IsLocalTest = Config.UseLocal;
+        UplayKit.Logs.CreateMixedLog();
         if (ParameterLib.HasParameter(args, "-debug"))
         {
             UplayKit.Logs.Log_Switch.MinimumLevel = Serilog.Events.LogEventLevel.Verbose;
